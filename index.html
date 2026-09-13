@@ -125,7 +125,7 @@ async function loadBinary(url,label='正在载入资源'){
   setLoadProgress(label,0,total);
   if(!response.body){const data=new Uint8Array(await response.arrayBuffer());setLoadProgress(label,data.length,total||data.length);return data}
   const reader=response.body.getReader(),chunks=[];let loaded=0;
-  for(;;){const result=await reader.read();if(result.done)break;chunks.push(result.value);loaded+=result.value.length;setLoadProgress(label,loaded,total)}
+  for(;;){const result=await reader.read();if(result.done)break;chunks.push(result.value);loaded+=result.value.length;setLoadProgress(label,loaded,total);if(total&&loaded>=total){reader.cancel().catch(()=>{});break}}
   const data=new Uint8Array(loaded);let offset=0;for(const chunk of chunks){data.set(chunk,offset);offset+=chunk.length}
   setLoadProgress(label,loaded,total||loaded);return data
 }
@@ -141,7 +141,7 @@ const AUDIO_DATA={
 };
 const canvas=document.getElementById('view'),statusEl=document.getElementById('status'),statusText=document.getElementById('statusText'),progressTrack=document.getElementById('progressTrack'),progressBar=document.getElementById('progressBar'),progressMeta=document.getElementById('progressMeta');
 const formatBytes=n=>n>=1048576?(n/1048576).toFixed(1)+' MB':n>=1024?(n/1024).toFixed(0)+' KB':n+' B';
-function setLoadProgress(label,loaded=0,total=0){statusEl.hidden=false;statusText.textContent=label;progressTrack.hidden=false;progressTrack.classList.toggle('indeterminate',!total);if(total){const percent=Math.max(0,Math.min(100,Math.round(loaded/total*100)));progressBar.style.width=percent+'%';progressMeta.textContent=percent+'% · '+formatBytes(loaded)+' / '+formatBytes(total)}else{progressBar.style.width='35%';progressMeta.textContent=loaded?'已下载 '+formatBytes(loaded):'正在连接…'}}
+function setLoadProgress(label,loaded=0,total=0){statusEl.hidden=false;statusText.textContent=label;progressTrack.hidden=false;progressTrack.classList.toggle('indeterminate',!total);if(total){const percent=loaded>=total?100:Math.max(0,Math.min(99,Math.floor(loaded/total*100)));progressBar.style.width=percent+'%';progressMeta.textContent=percent+'% · '+formatBytes(loaded)+' / '+formatBytes(total)}else{progressBar.style.width='35%';progressMeta.textContent=loaded?'已下载 '+formatBytes(loaded):'正在连接…'}}
 function hideLoadProgress(){statusEl.hidden=true}
 const gl=canvas.getContext('webgl2',{antialias:true,alpha:false});
 if(!gl){statusEl.textContent='当前浏览器不支持 WebGL 2';statusEl.style.color='#ffb1b1';throw new Error('WebGL 2 unavailable')}
@@ -185,7 +185,7 @@ let thoraxReady=false,thoraxLoading=null;
 function ensureThoraxOverlay(){
   if(thoraxReady)return Promise.resolve();
   if(thoraxLoading)return thoraxLoading;
-  thoraxLoading=buildThoraxOverlay().then(()=>{thoraxReady=true;hideLoadProgress()}).catch(e=>{console.error(e);statusEl.hidden=false;statusEl.textContent='胸廓模型载入失败：'+e.message;statusEl.style.color='#ffb1b1'}).finally(()=>{thoraxLoading=null});
+  thoraxLoading=buildThoraxOverlay().then(()=>{thoraxReady=true;hideLoadProgress()}).catch(e=>{console.error(e);statusEl.hidden=false;statusEl.textContent='胸廓模型载入失败：'+e.message;statusEl.style.color='#ffb1b1'}).then(result=>{thoraxLoading=null;return result});
   return thoraxLoading
 }
 function renderThoraxOverlay(){
