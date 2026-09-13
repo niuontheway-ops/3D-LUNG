@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="人体肺脏三维解剖课堂查看器">
+  <title>人体肺脏三维解剖 · 手机课堂版</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1820'/%3E%3Cpath d='M30 13v17c-6-12-15-8-18 2-4 13 1 24 12 20 6-2 7-8 7-16h2c0 8 1 14 7 16 11 4 16-7 12-20-3-10-12-14-18-2V13z' fill='%23ed9d9e'/%3E%3C/svg%3E">
+  <style>
+    :root{color-scheme:dark;--ink:#e9f2f5;--muted:#9eb1b9;--panel:rgba(11,24,32,.9);--line:rgba(213,235,242,.15);--accent:#ef9b9d;--accent2:#8fc9ce}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden;background:#071016;font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;color:var(--ink)}
+    body{display:grid;grid-template-columns:minmax(300px,350px) 1fr;min-height:0}
+    aside{position:relative;z-index:3;padding:28px 24px 22px;background:var(--panel);border-right:1px solid var(--line);backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:26px;min-height:0;overflow:auto}
+    .brand-lockup{display:flex;align-items:center;gap:11px;margin-bottom:17px}.brand-mark{width:46px;height:46px;display:grid;place-items:center;border:1px solid rgba(143,201,206,.55);border-radius:14px;background:linear-gradient(145deg,rgba(143,201,206,.2),rgba(239,155,157,.13));box-shadow:inset 0 0 18px rgba(143,201,206,.08),0 8px 24px rgba(0,0,0,.22);color:#d7f4f5;font-family:KaiTi,"STKaiti",serif;font-size:1.55rem;font-weight:700}.brand-copy{min-width:0}.brand-name{color:#edf8fa;font-size:1.05rem;font-weight:700;letter-spacing:.13em}.brand-by{margin-top:3px;color:#8fc9ce;font-size:.68rem;line-height:1.35}.brand-dept{margin-top:1px;color:#8499a1;font-size:.64rem;line-height:1.35}.eyebrow{color:var(--accent2);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase}.title{margin:.45rem 0 0;font-size:clamp(1.65rem,3vw,2.4rem);line-height:1.18;font-weight:650}.subtitle{margin:.7rem 0 0;color:var(--muted);font-size:.92rem;line-height:1.7}
+    h2{font-size:.8rem;letter-spacing:.12em;color:var(--muted);font-weight:600;margin:0 0 10px;text-transform:uppercase}.parts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.part,.lobe{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--ink);border-radius:10px;padding:10px 11px;display:flex;align-items:center;gap:9px;font:inherit;font-size:.86rem;cursor:pointer;text-align:left}.part:hover,.lobe:hover{background:rgba(255,255,255,.08)}.part[aria-pressed="false"]{opacity:.45}.dot{width:9px;height:9px;flex:0 0 auto;border-radius:50%;background:var(--dot);box-shadow:0 0 12px var(--dot)}
+    .lobe-list{display:grid;grid-template-columns:1fr 1fr;gap:7px}.lobe{min-height:39px}.lobe[data-lobe="Right_Middle_Lobe"]{grid-column:1}.lobe[aria-selected="true"]{border-color:rgba(239,155,157,.75);background:rgba(239,155,157,.14);box-shadow:inset 3px 0 0 var(--accent)}
+    .info{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035);padding:13px 14px;min-height:118px}.info h3{font-size:1rem;margin:0 0 4px}.info .latin{font-size:.72rem;color:var(--accent2);margin-bottom:8px}.info p{font-size:.79rem;color:var(--muted);line-height:1.55;margin:0}.info .segments{margin-top:8px;color:#d9e8ec}.info-actions{display:flex;gap:7px;margin-top:11px}.mini{border:1px solid var(--line);border-radius:7px;background:rgba(255,255,255,.06);color:var(--ink);padding:7px 9px;font:inherit;font-size:.75rem;cursor:pointer}.mini:disabled{opacity:.35;cursor:default}.mini[aria-pressed="true"]{border-color:var(--accent);color:#ffd4d5}
+    .help{display:grid;gap:10px;color:var(--muted);font-size:.84rem;line-height:1.45}.help span{display:flex;gap:9px;align-items:center}.key{min-width:28px;padding:3px 6px;border:1px solid var(--line);border-radius:5px;background:rgba(255,255,255,.05);color:var(--ink);font-size:.72rem;text-align:center}
+    .credit{margin-top:auto;color:#71868e;font-size:.7rem;line-height:1.55}.credit a{color:#86aeb7}
+    main{position:relative;min-width:0;min-height:0;height:100vh;background:radial-gradient(circle at 52% 43%,#24343c 0,#111e25 42%,#071016 78%)}canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}canvas:active{cursor:grabbing}
+    .toolbar{position:absolute;z-index:4;top:18px;right:18px;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.tool{border:1px solid var(--line);background:rgba(9,20,27,.82);color:var(--ink);border-radius:9px;padding:9px 12px;font:inherit;font-size:.82rem;cursor:pointer;backdrop-filter:blur(10px)}.tool:hover{background:rgba(29,50,59,.94)}.tool[aria-pressed="true"]{border-color:rgba(239,155,157,.7);color:#ffd1d2;background:rgba(91,41,46,.72)}
+    .diagram{position:absolute;z-index:3;right:18px;top:66px;width:min(430px,calc(100% - 36px));max-height:calc(100% - 94px);overflow:auto;padding:20px;border:1px solid var(--line);border-radius:14px;background:rgba(8,20,27,.94);box-shadow:0 20px 70px rgba(0,0,0,.45);backdrop-filter:blur(18px);transform:translateX(calc(100% + 36px));opacity:0;transition:.24s ease}.diagram.open{transform:none;opacity:1}.diagram h2{font-size:1.05rem;color:var(--ink);letter-spacing:.02em;text-transform:none}.diagram>p{margin:0 0 13px;color:var(--muted);font-size:.8rem;line-height:1.5}.airway-root,.main-focus,.branch-focus,.segment{appearance:none;font:inherit;color:inherit;cursor:pointer}.airway-root{display:block;width:100%;text-align:center;border:1px solid rgba(143,201,206,.45);border-radius:9px;background:rgba(143,201,206,.1);padding:9px}.airway-root:hover,.airway-root.active{background:rgba(143,201,206,.22);border-color:#8fc9ce}.carina{text-align:center;color:var(--muted);font-size:.74rem;padding:10px 0}.focus-readout{min-height:34px;margin:0 0 11px;padding:8px 10px;border:1px solid rgba(245,177,88,.28);border-radius:8px;background:rgba(245,177,88,.07);color:#ffd395;font-size:.73rem;line-height:1.4;text-align:center}.bronchi-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.bronchus{border-left:2px solid var(--accent2);padding-left:9px}.bronchus.right{border-color:var(--accent)}.main-focus{width:100%;border:0;border-radius:7px;background:transparent;padding:5px 6px;text-align:left;font-size:.87rem;font-weight:650}.main-focus:hover,.main-focus.active{background:rgba(143,201,206,.15);color:#d7fbff}.branch-block{margin:6px 0;padding:6px;border:1px solid transparent;border-radius:9px;background:rgba(255,255,255,.04)}.branch-block.active{border-color:rgba(245,177,88,.55);background:rgba(245,177,88,.1)}.branch-focus{display:block;width:100%;border:0;border-radius:7px;background:transparent;padding:4px 3px;text-align:left;font-size:.78rem}.branch-focus:hover,.branch-focus.active{color:#ffd395}.branch-focus small{display:block;color:var(--muted);margin-top:3px;line-height:1.35}.segments-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.segment{border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.05);padding:4px 6px;font-size:.65rem;line-height:1.15}.segment:hover,.segment.active{border-color:#f5b158;background:rgba(245,177,88,.18);color:#ffe1ad}.branch-marker{position:absolute;z-index:4;left:50%;top:46%;display:flex;align-items:center;gap:9px;pointer-events:none;opacity:0;transform:translate(-19px,-50%);transition:opacity .18s ease}.branch-marker.open{opacity:1}.branch-marker i{width:38px;height:38px;flex:0 0 38px;border:2px solid #ffb552;border-radius:50%;background:rgba(255,125,48,.13);box-shadow:0 0 0 9px rgba(255,125,48,.09),0 0 28px rgba(255,140,55,.75);animation:focusPulse 1.6s ease-in-out infinite}.branch-marker span{max-width:190px;padding:7px 9px;border:1px solid rgba(245,177,88,.45);border-radius:7px;background:rgba(7,16,22,.9);color:#ffe1ad;font-size:.72rem;line-height:1.25}@keyframes focusPulse{50%{transform:scale(1.16);box-shadow:0 0 0 14px rgba(255,125,48,.03),0 0 34px rgba(255,140,55,.9)}}.diagram-note{margin-top:14px!important;font-size:.72rem!important}
+    .status{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:.92rem;letter-spacing:.05em}.status::before{content:"";display:block;width:28px;height:28px;margin:0 auto 14px;border:2px solid rgba(255,255,255,.12);border-top-color:var(--accent);border-radius:50%;animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .orientation{position:absolute;right:20px;bottom:18px;color:#8ba0a8;font-size:.72rem;letter-spacing:.08em}.orientation b{color:#dfeaed;font-weight:500}
+    .fullscreen-exit{display:none;position:fixed;z-index:30;top:16px;left:50%;transform:translateX(-50%);border:1px solid rgba(255,255,255,.3);background:rgba(7,16,22,.92);color:#fff;border-radius:999px;padding:10px 18px;font:inherit;font-size:.84rem;cursor:pointer;box-shadow:0 10px 35px rgba(0,0,0,.4)}:fullscreen .fullscreen-exit{display:block}
+    .ausc-layer{position:absolute;z-index:3;inset:0;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .22s ease}.ausc-layer.open{opacity:1;visibility:visible}.hotspot{position:absolute;pointer-events:auto;width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(239,155,157,.88);color:#071016;font-weight:800;cursor:pointer;box-shadow:0 0 0 7px rgba(239,155,157,.16),0 5px 18px rgba(0,0,0,.4);animation:pulse 2.2s ease-in-out infinite}.hotspot:hover,.hotspot.active{background:#fff;transform:scale(1.12);box-shadow:0 0 0 9px rgba(143,201,206,.24),0 6px 24px rgba(0,0,0,.5)}.hotspot.abnormal{background:rgba(245,177,88,.92);box-shadow:0 0 0 7px rgba(245,177,88,.15),0 5px 18px rgba(0,0,0,.4)}.hotspot span{position:absolute;left:42px;top:50%;transform:translateY(-50%);white-space:nowrap;padding:5px 8px;border-radius:6px;background:rgba(7,16,22,.88);border:1px solid var(--line);color:var(--ink);font-size:.7rem;font-weight:500;pointer-events:none}.hotspot.flip span{left:auto;right:42px}@keyframes pulse{50%{box-shadow:0 0 0 11px rgba(239,155,157,.04),0 5px 18px rgba(0,0,0,.4)}}
+    .ausc-card{position:absolute;z-index:5;left:18px;bottom:18px;width:min(480px,calc(100% - 36px));max-height:min(52vh,470px);overflow:auto;padding:17px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(8,20,27,.96);box-shadow:0 20px 70px rgba(0,0,0,.5);backdrop-filter:blur(18px);transform:translateY(calc(100% + 36px));opacity:0;visibility:hidden;transition:.24s ease}.ausc-card.open{transform:none;opacity:1;visibility:visible}.ausc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.ausc-card h2{margin:0;color:var(--ink);font-size:1.05rem;letter-spacing:.01em;text-transform:none}.ausc-en{margin-top:3px;color:var(--accent2);font-size:.72rem}.badge{flex:0 0 auto;border-radius:999px;padding:5px 9px;background:rgba(143,201,206,.14);border:1px solid rgba(143,201,206,.4);color:#bde7ea;font-size:.7rem}.badge.abnormal{background:rgba(245,177,88,.13);border-color:rgba(245,177,88,.45);color:#ffd395}.ausc-grid{display:grid;grid-template-columns:72px 1fr;gap:7px 11px;margin:13px 0;font-size:.78rem;line-height:1.5}.ausc-grid dt{color:#91a7af}.ausc-grid dd{margin:0;color:#dbe7ea}.ausc-card audio{display:block;width:100%;height:38px;margin-top:10px}.ausc-tip{margin:10px 0 0;color:#82969e;font-size:.69rem;line-height:1.45}.ausc-source{color:#86aeb7}.listen-hint{position:absolute;z-index:4;left:50%;top:82px;transform:translateX(-50%);padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(7,16,22,.8);color:#cfe0e4;font-size:.74rem;pointer-events:none;opacity:0;transition:.2s}.listen-hint.open{opacity:1}
+    .ausc-head{cursor:move;user-select:none;touch-action:none}.ausc-card.dragging{transition:none}.ausc-head-actions{display:flex;align-items:center;gap:7px}.drag-hint{color:#8da1a8;font-size:.66rem;white-space:nowrap}
+    .exam-layer{position:absolute;z-index:4;inset:0;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .2s}.exam-layer.open{opacity:1;visibility:visible}.exam-point{position:absolute;pointer-events:auto;width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid rgba(207,245,247,.8);border-radius:50%;background:rgba(71,154,166,.88);color:#fff;font:700 .74rem/1 system-ui;cursor:pointer;box-shadow:0 0 0 7px rgba(85,180,190,.13),0 5px 18px rgba(0,0,0,.4)}.exam-point:hover,.exam-point.active{background:#f5b158;color:#15100a;border-color:#fff;box-shadow:0 0 0 9px rgba(245,177,88,.16),0 0 24px rgba(245,177,88,.6)}.exam-point[hidden]{display:none}.exam-card{position:absolute;z-index:5;left:18px;bottom:18px;width:min(470px,calc(100% - 36px));max-height:min(52vh,460px);overflow:auto;padding:17px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(8,20,27,.96);box-shadow:0 20px 70px rgba(0,0,0,.5);backdrop-filter:blur(18px);transform:translateY(calc(100% + 36px));opacity:0;visibility:hidden;transition:.24s ease}.exam-card.open{transform:none;opacity:1;visibility:visible}.exam-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.exam-card h2{margin:0;color:var(--ink);font-size:1.05rem;letter-spacing:.01em;text-transform:none}.exam-tabs{display:flex;gap:5px}.exam-tab{border:1px solid var(--line);border-radius:7px;background:rgba(255,255,255,.05);color:#b8c8cd;padding:6px 10px;font:inherit;font-size:.72rem;cursor:pointer}.exam-tab[aria-pressed="true"]{border-color:#8fc9ce;background:rgba(143,201,206,.16);color:#d9fbfd}.exam-site{margin:10px 0 0;color:var(--accent2);font-size:.75rem}.exam-grid{display:grid;grid-template-columns:72px 1fr;gap:7px 11px;margin:12px 0;font-size:.78rem;line-height:1.5}.exam-grid dt{color:#91a7af}.exam-grid dd{margin:0;color:#dbe7ea}.exam-note{margin:8px 0 0;color:#82969e;font-size:.69rem;line-height:1.45}.exam-note a{color:#86aeb7}.thorax-legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:10px;color:#9eb1b9;font-size:.68rem}.thorax-legend span{display:flex;align-items:center;gap:5px}.thorax-legend i{width:14px;height:2px;background:#e8d4b4}.thorax-legend .scapula{background:#9ac8d0}.thorax-legend .shell{background:#69bfca}
+    @media(max-width:760px),(pointer:coarse){
+      body,.mobile-edition{display:block;overflow:hidden;height:100dvh}.mobile-edition main,main{height:100dvh}
+      aside{position:absolute;z-index:12;left:max(8px,env(safe-area-inset-left));top:max(8px,env(safe-area-inset-top));width:min(360px,calc(100% - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)));max-height:calc(100dvh - 78px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;padding:16px;gap:15px;border:1px solid var(--line);border-radius:14px;transform:translateX(calc(-100% - 20px));transition:transform .25s ease;box-shadow:0 18px 60px rgba(0,0,0,.55)}
+      aside.open{transform:none}.brand-lockup img{width:82px!important}.title{font-size:1.42rem}.subtitle,.help,.credit{display:none}
+      .toolbar{position:fixed;z-index:20;left:0;right:0;top:auto;bottom:0;max-width:none;display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:7px;overflow-x:auto;padding:8px max(10px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));background:linear-gradient(180deg,transparent,rgba(5,14,20,.96) 24%);scrollbar-width:none}.toolbar::-webkit-scrollbar{display:none}.tool{min-width:max-content;min-height:44px;padding:10px 13px;font-size:.8rem}.menu{display:inline-block!important}
+      .orientation{display:none}.diagram{z-index:11;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));top:max(8px,env(safe-area-inset-top));bottom:calc(68px + env(safe-area-inset-bottom));width:auto;max-height:none;padding:16px;transform:translateY(calc(100% + 80px))}.diagram.open{transform:none}.bronchi-cols{grid-template-columns:1fr}.branch-marker span,.hotspot span{display:none}
+      .ausc-card,.exam-card{left:max(8px,env(safe-area-inset-left));bottom:calc(68px + env(safe-area-inset-bottom));width:calc(100% - 16px - env(safe-area-inset-left) - env(safe-area-inset-right));max-height:46dvh;padding:14px}.ausc-grid,.exam-grid{grid-template-columns:64px 1fr}.ausc-head,.exam-top{align-items:flex-start}.ausc-head-actions{gap:5px}.exam-tabs{flex-wrap:wrap;justify-content:flex-end}.drag-hint{display:none}
+      .hotspot,.exam-point{width:40px;height:40px;margin:-20px 0 0 -20px}.listen-hint{top:calc(12px + env(safe-area-inset-top));max-width:calc(100% - 20px);text-align:center}.fullscreen-exit{top:auto;bottom:calc(72px + env(safe-area-inset-bottom))}
+    }
+    .menu{display:none}
+  </style>
+</head>
+<body class="mobile-edition">
+  <aside id="panel">
+    <header><div class="brand-lockup" aria-label="壶兰呼吸，由莆田学院附属医院呼吸与危重症医学科老崔制作"><img src="assets/hulan-respiratory-logo.jpg" alt="壶兰呼吸官方LOGO：山峰、溪流与太阳" style="width:112px;height:auto;flex:none;border-radius:12px;display:block"><div class="brand-copy"><div class="brand-name">壶兰呼吸</div><div class="brand-by">by 莆田学院附属医院</div><div class="brand-dept">呼吸与危重症医学科 · 老崔</div></div></div><div class="eyebrow">课堂教学模型</div><h1 class="title">人体肺脏<br>三维解剖</h1><p class="subtitle">点击模型或肺叶名称查看说明；可拆解肺叶、查看支气管树，并进行听诊、触诊与叩诊教学。</p></header>
+    <section><h2>结构显示</h2><div class="parts">
+      <button class="part" data-group="lung" aria-pressed="true"><i class="dot" style="--dot:#e9b0b1"></i>肺组织</button>
+      <button class="part" data-group="bronchi" aria-pressed="true"><i class="dot" style="--dot:#d9c4ad"></i>支气管树</button>
+      <button class="part" data-group="trachea" aria-pressed="true"><i class="dot" style="--dot:#b9d5d9"></i>气管软骨</button>
+      <button class="part" data-group="larynx" aria-pressed="true"><i class="dot" style="--dot:#d99b9d"></i>喉部与甲状腺</button>
+    </div></section>
+    <section><h2>五个肺叶</h2><div class="lobe-list">
+      <button class="lobe" data-lobe="Right_Superior_Lobe"><i class="dot" style="--dot:#f2b4b0"></i>右肺上叶</button>
+      <button class="lobe" data-lobe="Left_Superior_Lobe"><i class="dot" style="--dot:#dba5bc"></i>左肺上叶</button>
+      <button class="lobe" data-lobe="Right_Middle_Lobe"><i class="dot" style="--dot:#e88f86"></i>右肺中叶</button>
+      <button class="lobe" data-lobe="Right_Inferior_Lobe"><i class="dot" style="--dot:#c87976"></i>右肺下叶</button>
+      <button class="lobe" data-lobe="Left_Inferior_Lobe"><i class="dot" style="--dot:#ae6d83"></i>左肺下叶</button>
+    </div></section>
+    <section class="info" id="info"><h3>选择一个肺叶</h3><div class="latin">Click a lobe</div><p>点击三维模型表面，或点击上方肺叶名称，查看位置、肺裂关系和主要支气管肺段。</p><div class="info-actions"><button class="mini" id="isolate" disabled>单独显示</button><button class="mini" id="clear" disabled>取消选择</button></div></section>
+    <footer class="credit">肺模型：E-learning UMCG · CC BY-NC-SA 4.0<br><a href="https://sketchfab.com/3d-models/anatomy-of-the-airways-opaque-lungs-1cd55d26c1254ab7a5d0845fb9a207fe">Anatomy of the airways · 来源</a><br>胸廓：BodyParts3D © DBCLS<br><a href="https://lifesciencedb.jp/bp3d/info_en/license/index.html">CC BY-SA 2.1 Japan · 来源与许可</a></footer>
+  </aside>
+  <main>
+    <canvas id="view" aria-label="可旋转的人体肺脏三维模型"></canvas>
+    <div class="toolbar"><button class="tool menu" id="menu">肺叶</button><button class="tool" id="auscBtn" aria-pressed="false">听诊教学</button><button class="tool" id="examBtn" aria-pressed="false">触诊叩诊</button><button class="tool" id="diagramBtn" aria-pressed="false">支气管图解</button><button class="tool" id="explode" aria-pressed="false">拆解肺叶</button><button class="tool" id="spin" aria-pressed="false">自动旋转</button><button class="tool" id="reset">复位</button><button class="tool" id="full">全屏</button></div>
+    <button class="fullscreen-exit" id="exitFull" type="button">退出全屏 <small>Esc</small></button>
+    <div class="listen-hint" id="listenHint">点击听诊点，播放对应呼吸音</div>
+    <div class="ausc-layer" id="auscLayer" aria-label="肺部听诊点">
+      <button class="hotspot abnormal" data-sound="stridor" style="left:50%;top:18%" aria-label="听诊喘鸣"><b>8</b><span>喘鸣</span></button>
+      <button class="hotspot" data-sound="bronchial" style="left:50%;top:27%" aria-label="听诊支气管呼吸音"><b>1</b><span>支气管音</span></button>
+      <button class="hotspot" data-sound="bronchovesicular" style="left:50%;top:38%" aria-label="听诊支气管肺泡呼吸音"><b>2</b><span>支气管肺泡音</span></button>
+      <button class="hotspot" data-sound="vesicular" style="left:38%;top:43%" aria-label="听诊肺泡呼吸音"><b>3</b><span>肺泡音</span></button>
+      <button class="hotspot abnormal" data-sound="rhonchi" style="left:61%;top:43%" aria-label="听诊低调干啰音"><b>6</b><span>低调干啰音</span></button>
+      <button class="hotspot abnormal flip" data-sound="coarse" style="left:39%;top:55%" aria-label="听诊粗湿啰音"><b>4</b><span>粗湿啰音</span></button>
+      <button class="hotspot abnormal" data-sound="wheezing" style="left:62%;top:56%" aria-label="听诊呼气相高调干啰音"><b>7</b><span>呼气相哮鸣音</span></button>
+      <button class="hotspot abnormal flip" data-sound="fine" style="left:42%;top:68%" aria-label="听诊细湿啰音"><b>5</b><span>细湿啰音</span></button>
+    </div>
+    <section class="ausc-card" id="auscCard" aria-live="polite">
+      <div class="ausc-head" id="auscDragHandle" title="拖动此框"><div><h2 id="soundTitle">肺部听诊教学</h2><div class="ausc-en" id="soundEn">Select an auscultation point</div></div><div class="ausc-head-actions"><span class="drag-hint">拖动此框</span><span class="badge" id="soundBadge">待选择</span></div></div>
+      <dl class="ausc-grid"><dt>听诊位置</dt><dd id="soundSite">点击模型上的编号听诊点。</dd><dt>声音性质</dt><dd id="soundNature">选择后显示音调、时相和连续性。</dd><dt>意义/病因</dt><dd id="soundCause">异常呼吸音的常见原因会显示在这里。</dd></dl>
+      <audio id="auscAudio" controls preload="none">当前浏览器不支持音频播放。</audio>
+      <p class="ausc-tip">听诊点用于课堂演示，异常音的实际分布随病变部位而变；单一声音不能确诊。资料依据 <a class="ausc-source" href="https://www.ncbi.nlm.nih.gov/books/NBK537253/">NCBI Lung Sounds</a> 与 <a class="ausc-source" href="https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues">Merck Manual</a>。</p>
+    </section>
+    <div class="exam-layer" id="examLayer" aria-label="胸部触诊与叩诊定位点">
+      <button class="exam-point" data-exam-site="trachea" aria-label="检查气管位置">气</button>
+      <button class="exam-point" data-exam-site="right_upper" aria-label="检查右上胸">右上</button>
+      <button class="exam-point" data-exam-site="left_upper" aria-label="检查左上胸">左上</button>
+      <button class="exam-point" data-exam-site="right_middle" aria-label="检查右中胸">右中</button>
+      <button class="exam-point" data-exam-site="left_middle" aria-label="检查左中胸">左中</button>
+      <button class="exam-point" data-exam-site="right_base" aria-label="检查右肺底">右下</button>
+      <button class="exam-point" data-exam-site="left_base" aria-label="检查左肺底">左下</button>
+    </div>
+    <section class="exam-card" id="examCard" aria-live="polite">
+      <div class="exam-top" id="examDragHandle" title="拖动标题栏移动说明框" style="cursor:move;user-select:none;touch-action:none"><div><h2 id="examTitle">胸部触诊教学</h2><span class="drag-hint">拖动此框</span></div><div class="exam-tabs"><button class="exam-tab" data-exam-kind="palpation" aria-pressed="true">触诊</button><button class="exam-tab" data-exam-kind="percussion" aria-pressed="false">叩诊</button><button class="exam-tab" id="examFold" aria-expanded="true">收起说明</button></div></div>
+      <div class="exam-site" id="examSite">点击胸部定位点查看检查方法和异常变化</div>
+      <dl class="exam-grid"><dt>检查方法</dt><dd id="examMethod">左右对称比较，观察胸廓扩张并触诊气管、压痛和语音震颤。</dd><dt>正常表现</dt><dd id="examNormal">气管居中，双侧胸廓扩张基本对称，语音震颤左右相近。</dd><dt>异常变化</dt><dd id="examAbnormal">选择不同部位后显示常见变化及其临床提示。</dd></dl>
+      <div class="thorax-legend"><span><i></i>肋骨</span><span><i class="scapula"></i>肩胛骨</span><span><i class="shell"></i>半透明胸壁包裹层</span></div>
+      <p class="exam-note">定位图用于课堂示意。体征需双侧比较并结合病史、影像及其他检查。参考 <a href="https://www.ncbi.nlm.nih.gov/books/NBK368/">NCBI Chest Examination</a> 与 <a href="https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues">Merck Manual</a>。</p>
+    </section>
+    <aside class="diagram" id="diagram" aria-label="支气管树图解">
+      <h2>支气管树分支图解</h2><p>点击叶支气管名称或肺段编号，三维支气管树会突出显示对应区域。</p>
+      <button class="airway-root branch-option" data-region="trachea">气管 Trachea</button><div class="carina">气管隆嵴 Carina ↓</div>
+      <div class="focus-readout" id="focusReadout">请选择一个叶支气管或肺段</div>
+      <div class="bronchi-cols">
+        <div class="bronchus right">
+          <button class="main-focus branch-option" data-region="right_main">右主支气管</button>
+          <div class="branch-block" data-lobe-block="rul"><button class="branch-focus branch-option" data-region="rul">右上叶支气管<small>B¹ 尖段 · B² 后段 · B³ 前段</small></button><div class="segments-list"><button class="segment branch-option" data-region="r_s1">B¹ 尖段</button><button class="segment branch-option" data-region="r_s2">B² 后段</button><button class="segment branch-option" data-region="r_s3">B³ 前段</button></div></div>
+          <div class="branch-block" data-lobe-block="rml"><button class="branch-focus branch-option" data-region="rml">右中叶支气管<small>B⁴ 外侧段 · B⁵ 内侧段</small></button><div class="segments-list"><button class="segment branch-option" data-region="r_s4">B⁴ 外侧段</button><button class="segment branch-option" data-region="r_s5">B⁵ 内侧段</button></div></div>
+          <div class="branch-block" data-lobe-block="rll"><button class="branch-focus branch-option" data-region="rll">右下叶支气管<small>B⁶ 上段 · B⁷–B¹⁰ 基底段</small></button><div class="segments-list"><button class="segment branch-option" data-region="r_s6">B⁶ 上段</button><button class="segment branch-option" data-region="r_s7">B⁷ 内侧底段</button><button class="segment branch-option" data-region="r_s8">B⁸ 前底段</button><button class="segment branch-option" data-region="r_s9">B⁹ 外侧底段</button><button class="segment branch-option" data-region="r_s10">B¹⁰ 后底段</button></div></div>
+        </div>
+        <div class="bronchus">
+          <button class="main-focus branch-option" data-region="left_main">左主支气管</button>
+          <div class="branch-block" data-lobe-block="lul"><button class="branch-focus branch-option" data-region="lul">左上叶支气管<small>B¹⁺² 尖后段 · B³ 前段 · B⁴–B⁵ 舌段</small></button><div class="segments-list"><button class="segment branch-option" data-region="l_s12">B¹⁺² 尖后段</button><button class="segment branch-option" data-region="l_s3">B³ 前段</button><button class="segment branch-option" data-region="l_s4">B⁴ 上舌段</button><button class="segment branch-option" data-region="l_s5">B⁵ 下舌段</button></div></div>
+          <div class="branch-block" data-lobe-block="lll"><button class="branch-focus branch-option" data-region="lll">左下叶支气管<small>B⁶ 上段 · B⁷⁺⁸–B¹⁰ 基底段</small></button><div class="segments-list"><button class="segment branch-option" data-region="l_s6">B⁶ 上段</button><button class="segment branch-option" data-region="l_s78">B⁷⁺⁸ 前内侧底段</button><button class="segment branch-option" data-region="l_s9">B⁹ 外侧底段</button><button class="segment branch-option" data-region="l_s10">B¹⁰ 后底段</button></div></div>
+        </div>
+      </div><p class="diagram-note">高亮区域依据原模型空间位置作教学定位；原始支气管为整体网格，不能像独立零件一样拆分。肺段命名采用常用方案，个体分支可有变异。</p>
+    </aside>
+    <div class="branch-marker" id="branchMarker" aria-live="polite"><i></i><span id="branchMarkerText"></span></div>
+    <div class="status" id="status">正在载入模型</div><div class="orientation"><b>前面观</b> · 鼠标拖动旋转</div>
+  </main>
+<script>
+const MODEL_URL='assets/lung_lobes_teaching.glb';
+async function loadBinary(url){const response=await fetch(url);if(!response.ok)throw new Error('资源载入失败：'+url);return new Uint8Array(await response.arrayBuffer())}
+const AUDIO_DATA={
+  bronchial:'assets/audio/bronchial.mp3',
+  bronchovesicular:'assets/audio/bronchovesicular.mp3',
+  vesicular:'assets/audio/vesicular.mp3',
+  coarse:'assets/audio/coarse_crackles.mp3',
+  fine:'assets/audio/fine_crackles.mp3',
+  rhonchi:'assets/audio/rhonchi.mp3',
+  wheezing:'assets/audio/wheezing.mp3',
+  stridor:'assets/audio/stridor.mp3'
+};
+const canvas=document.getElementById('view'), statusEl=document.getElementById('status');
+const gl=canvas.getContext('webgl2',{antialias:true,alpha:false});
+if(!gl){statusEl.textContent='当前浏览器不支持 WebGL 2';statusEl.style.color='#ffb1b1';throw new Error('WebGL 2 unavailable')}
+const vs=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec4 c;
+uniform mat4 mvp,model;out vec3 N;out vec3 P;out vec4 C;
+void main(){vec4 wp=model*vec4(p,1.);P=wp.xyz;N=normalize(transpose(inverse(mat3(model)))*n);C=c;gl_Position=mvp*vec4(p,1.);}`;
+const fs=`#version 300 es
+precision highp float;in vec3 N;in vec3 P;in vec4 C;uniform float selected,dimmed,airwayFocus;uniform vec3 focusCenter,focusRadius;out vec4 outColor;
+void main(){vec3 nn=normalize(N);vec3 light=normalize(vec3(-.45,-.65,.75));float d=max(dot(nn,light),0.);float soft=.43+.72*d;float rim=pow(1.-abs(dot(nn,normalize(-P))),2.4)*.18;vec3 base=mix(C.rgb,vec3(1.,.46,.18),selected*.48);vec3 col=base*(soft+rim)*mix(1.,.55,dimmed);if(airwayFocus>.5){float q=length((P-focusCenter)/focusRadius);float glow=1.-smoothstep(.76,1.12,q);vec3 highlight=vec3(1.,.27,.045)*(1.0+d*.45);col=mix(col,highlight,glow*.92);}outColor=vec4(pow(col,vec3(1./2.2)),1.);}`;
+function shader(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(x));return x}
+const prog=gl.createProgram();gl.attachShader(prog,shader(gl.VERTEX_SHADER,vs));gl.attachShader(prog,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(prog));
+const U={mvp:gl.getUniformLocation(prog,'mvp'),model:gl.getUniformLocation(prog,'model'),selected:gl.getUniformLocation(prog,'selected'),dimmed:gl.getUniformLocation(prog,'dimmed'),airwayFocus:gl.getUniformLocation(prog,'airwayFocus'),focusCenter:gl.getUniformLocation(prog,'focusCenter'),focusRadius:gl.getUniformLocation(prog,'focusRadius')};
+const pickVS=`#version 300 es\nprecision highp float;layout(location=0)in vec3 p;uniform mat4 mvp;void main(){gl_Position=mvp*vec4(p,1.);}`;
+const pickFS=`#version 300 es\nprecision highp float;uniform vec4 idColor;out vec4 outColor;void main(){outColor=idColor;}`;
+const pickProg=gl.createProgram();gl.attachShader(pickProg,shader(gl.VERTEX_SHADER,pickVS));gl.attachShader(pickProg,shader(gl.FRAGMENT_SHADER,pickFS));gl.linkProgram(pickProg);
+const PU={mvp:gl.getUniformLocation(pickProg,'mvp'),id:gl.getUniformLocation(pickProg,'idColor')};
+const overlayVS=`#version 300 es
+precision highp float;
+layout(location=0)in vec3 p;layout(location=1)in vec3 n;
+uniform mat4 vp;out vec3 normal;out vec3 position;
+void main(){normal=n;position=p;gl_Position=vp*vec4(p,1.);}`;
+const overlayFS=`#version 300 es
+precision highp float;
+uniform vec4 color;uniform vec3 eye;in vec3 normal;in vec3 position;out vec4 outColor;
+void main(){vec3 n=normalize(normal);if(!gl_FrontFacing)n=-n;vec3 v=normalize(eye-position);
+vec3 key=normalize(vec3(-.55,.85,1.1));vec3 fill=normalize(vec3(.8,.3,-.6));
+float light=.28+.56*max(dot(n,key),0.)+.22*max(dot(n,fill),0.);
+float spec=pow(max(dot(n,normalize(key+v)),0.),36.)*.14;
+float rim=pow(1.-abs(dot(n,v)),3.);
+vec3 col=color.rgb*light+spec;float alpha=color.a<.2?color.a*(.25+1.3*rim):color.a;
+outColor=vec4(pow(col,vec3(1./2.2)),alpha);}`;
+const overlayProg=gl.createProgram();gl.attachShader(overlayProg,shader(gl.VERTEX_SHADER,overlayVS));gl.attachShader(overlayProg,shader(gl.FRAGMENT_SHADER,overlayFS));gl.linkProgram(overlayProg);
+const OU={vp:gl.getUniformLocation(overlayProg,'vp'),color:gl.getUniformLocation(overlayProg,'color'),eye:gl.getUniformLocation(overlayProg,'eye')};
+const thoraxMeshes=[];
+async function buildThoraxOverlay(){
+  const [bytes,metadata]=await Promise.all([loadBinary('assets/thorax.bin'),fetch('assets/thorax-meta.json').then(r=>{if(!r.ok)throw new Error('资源载入失败：assets/thorax-meta.json');return r.json()})]),buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,bytes,gl.STATIC_DRAW);
+  for(const m of metadata){const vao=gl.createVertexArray();gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,m.offset);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,m.offset+12);thoraxMeshes.push({...m,vao})}
+}
+function renderThoraxOverlay(){
+  gl.useProgram(overlayProg);gl.uniformMatrix4fv(OU.vp,false,vpCurrent);gl.uniform3f(OU.eye,VIEW_TARGET[0]+dist*Math.sin(yaw)*Math.cos(pitch),VIEW_TARGET[1]+dist*Math.sin(pitch),VIEW_TARGET[2]+dist*Math.cos(yaw)*Math.cos(pitch));
+  gl.enable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  // Solid bone writes depth: back ribs and scapulae cannot shine through front structures.
+  gl.depthMask(true);for(const m of thoraxMeshes){if(m.skin)continue;gl.bindVertexArray(m.vao);gl.uniform4f(OU.color,...m.color);gl.drawArrays(gl.TRIANGLES,0,m.count)}
+  // Actual torso skin is a thin translucent envelope, rendered after all opaque anatomy.
+  gl.depthMask(false);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);for(const m of thoraxMeshes){if(!m.skin)continue;gl.bindVertexArray(m.vao);gl.uniform4f(OU.color,...m.color);gl.drawArrays(gl.TRIANGLES,0,m.count)}
+  gl.depthMask(true);gl.disable(gl.BLEND);gl.enable(gl.CULL_FACE);
+}
+
+const I=()=>new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
+function mul(a,b){const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)o[c*4+r]+=a[k*4+r]*b[c*4+k];return o}
+function trs(n){if(n.matrix)return new Float32Array(n.matrix);const m=I(),q=n.rotation||[0,0,0,1],s=n.scale||[1,1,1],t=n.translation||[0,0,0],x=q[0],y=q[1],z=q[2],w=q[3],x2=x+x,y2=y+y,z2=z+z;Object.assign(m,{0:(1-(y*y2+z*z2))*s[0],1:(x*y2+w*z2)*s[0],2:(x*z2-w*y2)*s[0],4:(x*y2-w*z2)*s[1],5:(1-(x*x2+z*z2))*s[1],6:(y*z2+w*x2)*s[1],8:(x*z2+w*y2)*s[2],9:(y*z2-w*x2)*s[2],10:(1-(x*x2+y*y2))*s[2],12:t[0],13:t[1],14:t[2]});return m}
+function transform(m,p){return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]]}
+function projectToCanvas(m,p){const x=m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],y=m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],z=m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14],w=m[3]*p[0]+m[7]*p[1]+m[11]*p[2]+m[15];if(w<=0)return null;const nx=x/w,ny=y/w,nz=z/w;return[(nx*.5+.5)*canvas.clientWidth,(1-(ny*.5+.5))*canvas.clientHeight,nz]}
+function perspective(f,a,n,fa){const q=1/Math.tan(f/2),d=1/(n-fa);return new Float32Array([q/a,0,0,0,0,q,0,0,0,0,(fa+n)*d,-1,0,0,2*fa*n*d,0])}
+const sub=(a,b)=>a.map((v,i)=>v-b[i]),dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=a=>{const d=Math.hypot(...a);return a.map(v=>v/d)};
+function look(eye,at,up){const z=norm(sub(eye,at)),x=norm(cross(up,z)),y=cross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1])}
+const LOBE_INFO={
+  Right_Superior_Lobe:{title:'右肺上叶',latin:'Lobus superior pulmonis dextri',body:'位于水平裂上方，构成右肺的肺尖和大部分上部前、外侧面。',segments:'主要肺段：S¹ 尖段、S² 后段、S³ 前段'},
+  Right_Middle_Lobe:{title:'右肺中叶',latin:'Lobus medius pulmonis dextri',body:'位于水平裂与斜裂之间，体积较小，主要出现在右肺前内侧。',segments:'主要肺段：S⁴ 外侧段、S⁵ 内侧段'},
+  Right_Inferior_Lobe:{title:'右肺下叶',latin:'Lobus inferior pulmonis dextri',body:'位于斜裂后下方，形成右肺的大部分膈面和后部。',segments:'主要肺段：S⁶ 上段、S⁷–S¹⁰ 基底段'},
+  Left_Superior_Lobe:{title:'左肺上叶',latin:'Lobus superior pulmonis sinistri',body:'位于左肺斜裂上方，前缘具有心切迹，其下方形成舌叶。',segments:'主要肺段：S¹⁺² 尖后段、S³ 前段、S⁴–S⁵ 舌段'},
+  Left_Inferior_Lobe:{title:'左肺下叶',latin:'Lobus inferior pulmonis sinistri',body:'位于左肺斜裂后下方，构成左肺大部分后面和膈面。',segments:'主要肺段：S⁶ 上段、S⁷⁺⁸–S¹⁰ 基底段'}
+};
+const SOUND_INFO={
+  bronchial:{title:'支气管呼吸音',en:'Bronchial breath sounds',normal:true,site:'气管、喉部和胸骨柄附近；若在外周肺野听到则属异常。',nature:'响亮、粗糙、音调高；呼气相通常长于吸气相，中间可有短暂停顿。',cause:'在正常位置属于正常呼吸音。外周出现时提示声音传导增强，常见于肺实变，需结合其他检查判断。'},
+  bronchovesicular:{title:'支气管肺泡呼吸音',en:'Bronchovesicular breath sounds',normal:true,site:'前胸上部大支气管附近，后胸肩胛间区。',nature:'音调和强度居中，吸气相与呼气相时长大致相近。',cause:'在大支气管投影区属于正常呼吸音；若在外周明显出现，可能与局部实变或声音传导增强有关。'},
+  vesicular:{title:'肺泡呼吸音',en:'Vesicular breath sounds',normal:true,site:'大部分外周肺野，后胸肺底常较清楚。',nature:'柔和、低调、吹风样；吸气相较长且较响，呼气相短而轻，通常无明显停顿。',cause:'这是外周肺野的正常呼吸音。强度减弱或左右不对称时，应结合通气、胸腔积液或气胸等情况评估。'},
+  coarse:{title:'粗湿啰音',en:'Coarse crackles (rales)',normal:false,site:'教学点置于中下肺野；实际部位取决于大、中气道内病变分布。',nature:'低调、较响、断续的爆裂或冒泡样声音，常在吸气早期出现，有时咳嗽后改变。',cause:'常与较大气道内分泌物或液体有关，可见于支气管炎、支气管扩张、肺炎或肺水肿。'},
+  fine:{title:'细湿啰音',en:'Fine crackles (rales)',normal:false,site:'常在肺底更易听到；也可局限于病变肺区。',nature:'短促、细小、高调、不连续，多在吸气末出现，常形容为撕开尼龙搭扣样。',cause:'与小气道或肺泡突然开放有关，常见于肺间质纤维化、肺炎、肺水肿或肺不张。'},
+  rhonchi:{title:'低调干啰音',en:'Rhonchi',normal:false,site:'可在中央大气道投影区或多个肺野听到。',nature:'低调、连续、鼾鸣或咕噜样，可出现在吸气或呼气，咳嗽后可能减轻或改变。',cause:'多提示较大气道狭窄或分泌物，可见于急慢性支气管炎、慢阻肺及其他伴黏液潴留的情况。'},
+  wheezing:{title:'高调干啰音（呼气相）',en:'Expiratory wheezing',normal:false,site:'可弥漫于双肺，也可局限于单个受阻气道区域。',nature:'高调、连续、音乐样，通常呼气相更明显，提示空气通过狭窄气道。',cause:'常见于哮喘、慢阻肺或黏液栓；局限性哮鸣还需考虑异物、肿物或外部压迫。'},
+  stridor:{title:'喘鸣',en:'Stridor',normal:false,site:'颈前喉部和气管上段最响。',nature:'响亮、尖锐、高调，多在吸气相出现，常无需听诊器也能听见。',cause:'提示上气道明显狭窄或阻塞，可由喉头水肿、异物、感染性喉气管炎或声门病变等引起；急性喘鸣需立即评估气道。'}
+};
+const AUSC_POINTS={stridor:[0,1.16,.28],bronchial:[0,.93,.28],bronchovesicular:[0,.63,.28],vesicular:[-.43,.48,.3],rhonchi:[.43,.48,.3],coarse:[-.48,.15,.32],wheezing:[.48,.15,.32],fine:[-.4,-.22,.28]};
+const EXAM_POINTS={trachea:[0,1.02,.36],right_upper:[-.43,.54,.38],left_upper:[.43,.54,.38],right_middle:[-.52,.22,.42],left_middle:[.52,.22,.42],right_base:[-.45,-.18,.35],left_base:[.45,-.18,.35]};
+const EXAM_INFO={
+  palpation:{
+    trachea:{title:'气管位置触诊',method:'在胸骨上切迹上方，轻触气管两侧间隙，比较气管是否位于正中。',normal:'气管大致居中，两侧间隙基本对称。',abnormal:'气管可被肺容积减少牵向患侧，也可被大量胸腔积液、张力性气胸或占位推向健侧。'},
+    right_upper:{title:'右上胸壁触诊',method:'用掌面依次触诊锁骨、肋骨与肋软骨连接处，询问压痛并感受皮下捻发感。',normal:'胸壁无明显压痛、肿块或皮下捻发感。',abnormal:'局限性压痛可见于肋骨损伤或肋软骨炎；捻发感提示皮下气肿。'},
+    left_upper:{title:'左上胸壁触诊',method:'用掌面依次触诊锁骨、肋骨与肋软骨连接处，并与右侧对称位置比较。',normal:'胸壁无明显压痛，两侧形态与触感接近。',abnormal:'局限性压痛可见于肋骨损伤或肋软骨炎；捻发感提示皮下气肿。'},
+    right_middle:{title:'右侧语音震颤',method:'将手掌尺侧或掌根贴于胸壁，让受检者用相同音量重复“九九”，逐点与左侧比较。',normal:'同一水平两侧震颤强度大致相近。',abnormal:'肺实变时可增强；胸腔积液、气胸或大气道阻塞时常减弱。'},
+    left_middle:{title:'左侧语音震颤',method:'将手掌尺侧或掌根贴于胸壁，让受检者重复“九九”，与右侧同一水平比较。',normal:'同一水平两侧震颤强度大致相近。',abnormal:'肺实变时可增强；胸腔积液、气胸或大气道阻塞时常减弱。'},
+    right_base:{title:'右肺底胸廓扩张',method:'双手置于后下胸壁，拇指靠近第十肋水平中线，观察深吸气时双侧拇指分离。',normal:'双侧同步、幅度接近，深吸气时拇指通常分开约 2–3 cm。',abnormal:'单侧活动减弱可见于胸腔积液、气胸、肺不张或胸膜疼痛；双侧减弱可见于严重阻塞或限制性通气障碍。'},
+    left_base:{title:'左肺底胸廓扩张',method:'双手置于后下胸壁，拇指靠近第十肋水平中线，比较两侧深吸气活动。',normal:'双侧同步、幅度接近，深吸气时拇指通常分开约 2–3 cm。',abnormal:'单侧活动减弱可见于胸腔积液、气胸、肺不张或胸膜疼痛；双侧减弱可见于严重阻塞或限制性通气障碍。'}
+  },
+  percussion:{
+    right_upper:{title:'右上肺野叩诊',method:'在肋间隙内自上而下叩诊，并与左侧同一水平交替比较。',normal:'清音，左右大致对称。',abnormal:'局限性浊音可提示邻近胸壁的肺实变或液体；过清音可见于气胸或肺过度充气。'},
+    left_upper:{title:'左上肺野叩诊',method:'在肋间隙内自上而下叩诊，并与右侧同一水平交替比较。',normal:'清音，左右大致对称。',abnormal:'局限性浊音可提示邻近胸壁的肺实变或液体；过清音可见于气胸或肺过度充气。'},
+    right_middle:{title:'右前胸中下部叩诊',method:'沿锁骨中线逐肋间向下叩诊，注意清音转为肝浊音的位置。',normal:'肺野呈清音；向下接近肝上界时转为浊音。',abnormal:'浊音界升高可见于膈肌抬高、肺底病变或胸腔积液；肺过度充气时肝浊音界可能降低。'},
+    left_middle:{title:'左前胸中部叩诊',method:'避开心前区，在左侧肺野与右侧对称部位比较叩诊音。',normal:'外侧肺野为清音，心前区出现相对浊音属于正常解剖差异。',abnormal:'肺野新增局限性浊音可提示实变或胸腔液体；过清音可见于气胸或肺过度充气。'},
+    right_base:{title:'右肺底叩诊',method:'从清音区向下叩诊确定膈肌位置，再于深吸气后重复，估计膈肌移动范围。',normal:'清音在肺下界转为浊音，深吸气时膈肌下降；两侧移动幅度接近。',abnormal:'肺底浊音升高或移动减弱可见于胸腔积液、肺不张、实变或膈肌活动受限。'},
+    left_base:{title:'左肺底叩诊',method:'从清音区向下叩诊，并与右侧同一水平及呼吸前后变化比较。',normal:'肺野为清音；左前下胸邻近胃泡处可呈鼓音，需结合解剖位置判断。',abnormal:'肺底浊音或移动减弱可见于胸腔积液、肺不张、实变或膈肌活动受限。'}
+  }
+};
+const AIRWAY_REGIONS={
+  trachea:{title:'气管',center:[0,.91,-.02],radius:[.14,.43,.45],marker:[50,31]},
+  right_main:{title:'右主支气管',center:[-.18,.47,-.03],radius:[.28,.2,.48],marker:[47,45]},
+  left_main:{title:'左主支气管',center:[.18,.47,-.03],radius:[.28,.2,.48],marker:[53,45]},
+  rul:{title:'右上叶支气管',center:[-.36,.55,-.03],radius:[.43,.27,.62],marker:[43,45],lobe:'rul'},
+  rml:{title:'右中叶支气管',center:[-.43,.25,.04],radius:[.38,.22,.58],marker:[42,55],lobe:'rml'},
+  rll:{title:'右下叶支气管',center:[-.36,.02,-.05],radius:[.42,.26,.65],marker:[43,65],lobe:'rll'},
+  lul:{title:'左上叶支气管',center:[.36,.54,-.03],radius:[.43,.3,.62],marker:[57,45],lobe:'lul'},
+  lll:{title:'左下叶支气管',center:[.37,.06,-.05],radius:[.43,.29,.65],marker:[57,64],lobe:'lll'},
+  r_s1:{title:'右 S¹ 尖段支气管',center:[-.28,.71,-.05],radius:[.18,.17,.4],marker:[45,40],lobe:'rul'},
+  r_s2:{title:'右 S² 后段支气管',center:[-.43,.59,-.18],radius:[.2,.16,.36],marker:[42,44],lobe:'rul'},
+  r_s3:{title:'右 S³ 前段支气管',center:[-.44,.48,.13],radius:[.2,.16,.36],marker:[41,48],lobe:'rul'},
+  r_s4:{title:'右 S⁴ 外侧段支气管',center:[-.51,.27,.08],radius:[.2,.16,.4],marker:[40,54],lobe:'rml'},
+  r_s5:{title:'右 S⁵ 内侧段支气管',center:[-.29,.2,.13],radius:[.18,.15,.38],marker:[45,56],lobe:'rml'},
+  r_s6:{title:'右 S⁶ 上段支气管',center:[-.32,.18,-.2],radius:[.2,.16,.37],marker:[44,58],lobe:'rll'},
+  r_s7:{title:'右 S⁷ 内侧底段支气管',center:[-.22,.02,.12],radius:[.17,.15,.36],marker:[46,64],lobe:'rll'},
+  r_s8:{title:'右 S⁸ 前底段支气管',center:[-.35,-.06,.15],radius:[.19,.16,.37],marker:[43,68],lobe:'rll'},
+  r_s9:{title:'右 S⁹ 外侧底段支气管',center:[-.5,-.08,0],radius:[.2,.17,.38],marker:[40,68],lobe:'rll'},
+  r_s10:{title:'右 S¹⁰ 后底段支气管',center:[-.37,-.12,-.18],radius:[.2,.17,.38],marker:[42,72],lobe:'rll'},
+  l_s12:{title:'左 S¹⁺² 尖后段支气管',center:[.34,.66,-.1],radius:[.22,.19,.4],marker:[56,41],lobe:'lul'},
+  l_s3:{title:'左 S³ 前段支气管',center:[.45,.48,.13],radius:[.2,.16,.36],marker:[59,48],lobe:'lul'},
+  l_s4:{title:'左 S⁴ 上舌段支气管',center:[.48,.28,.13],radius:[.2,.16,.38],marker:[60,54],lobe:'lul'},
+  l_s5:{title:'左 S⁵ 下舌段支气管',center:[.39,.18,.14],radius:[.2,.16,.38],marker:[58,58],lobe:'lul'},
+  l_s6:{title:'左 S⁶ 上段支气管',center:[.31,.19,-.2],radius:[.2,.16,.37],marker:[56,58],lobe:'lll'},
+  l_s78:{title:'左 S⁷⁺⁸ 前内侧底段支气管',center:[.31,-.02,.14],radius:[.2,.17,.38],marker:[57,66],lobe:'lll'},
+  l_s9:{title:'左 S⁹ 外侧底段支气管',center:[.5,-.07,0],radius:[.2,.17,.38],marker:[60,69],lobe:'lll'},
+  l_s10:{title:'左 S¹⁰ 后底段支气管',center:[.38,-.12,-.18],radius:[.2,.17,.38],marker:[58,72],lobe:'lll'}
+};
+const LOBE_NAMES=Object.keys(LOBE_INFO),EXPLODE={Right_Superior_Lobe:[-.25,.18,0],Right_Middle_Lobe:[-.34,0,0],Right_Inferior_Lobe:[-.22,-.2,0],Left_Superior_Lobe:[.25,.16,0],Left_Inferior_Lobe:[.24,-.2,0]};
+let drawables=[],visible={lung:true,bronchi:true,trachea:true,larynx:true},selectedLobe=null,isolated=false,exploded=false,auscMode=false,branchFocus=null,examOpen=false,examKind='palpation',examSite=null;
+function group(name){if(LOBE_INFO[name])return'lung';if(name.includes('bronchi1'))return'bronchi';if(name.includes('Trachea'))return'trachea';return'larynx'}
+async function decode(){const all=await loadBinary(MODEL_URL);const dv=new DataView(all.buffer),jsonLen=dv.getUint32(12,true),json=JSON.parse(new TextDecoder().decode(all.subarray(20,20+jsonLen))),binStart=28+jsonLen,binLen=dv.getUint32(20+jsonLen,true),bin=all.subarray(binStart,binStart+binLen),gpu=[];
+  function buffer(i,target){if(gpu[i])return gpu[i];const v=json.bufferViews[i],b=gl.createBuffer();gl.bindBuffer(target,b);gl.bufferData(target,bin.subarray(v.byteOffset||0,(v.byteOffset||0)+v.byteLength),gl.STATIC_DRAW);return gpu[i]=b}
+  const worlds=[];function walk(i,parent){const n=json.nodes[i],w=mul(parent,trs(n));worlds[i]=w;(n.children||[]).forEach(c=>walk(c,w))}(json.scenes[json.scene||0].nodes||[]).forEach(i=>walk(i,I()));
+  let min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+  json.nodes.forEach((n,ni)=>{if(n.mesh==null)return;const mesh=json.meshes[n.mesh],w=worlds[ni];mesh.primitives.forEach(pr=>{const a=json.accessors[pr.attributes.POSITION];for(const x of [a.min[0],a.max[0]])for(const y of [a.min[1],a.max[1]])for(const z of [a.min[2],a.max[2]]){const q=transform(w,[x,y,z]);for(let k=0;k<3;k++){min[k]=Math.min(min[k],q[k]);max[k]=Math.max(max[k],q[k])}};drawables.push({name:mesh.name,group:group(mesh.name),world:w,pr})})});
+  const center=min.map((v,i)=>(v+max[i])/2),extent=Math.max(...max.map((v,i)=>v-min[i])),N=I();N[0]=N[5]=N[10]=2.15/extent;N[12]=-center[0]*N[0];N[13]=-center[1]*N[5]+.35;N[14]=-center[2]*N[10];
+  drawables.forEach(d=>{d.model=mul(N,d.world);d.lobe=LOBE_INFO[d.name]?d.name:null;d.pickId=d.lobe?LOBE_NAMES.indexOf(d.lobe)+1:0;d.vao=gl.createVertexArray();gl.bindVertexArray(d.vao);for(const [key,loc]of[['POSITION',0],['NORMAL',1],['COLOR_0',2]]){const ai=d.pr.attributes[key];if(ai==null){gl.disableVertexAttribArray(loc);gl.vertexAttrib4f(loc,key==='COLOR_0'?.82:0,key==='COLOR_0'?.55:0,key==='COLOR_0'?.57:0,1);continue}const a=json.accessors[ai],v=json.bufferViews[a.bufferView];gl.bindBuffer(gl.ARRAY_BUFFER,buffer(a.bufferView,gl.ARRAY_BUFFER));gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,{SCALAR:1,VEC2:2,VEC3:3,VEC4:4}[a.type],a.componentType,!!a.normalized,v.byteStride||0,a.byteOffset||0)}const ia=json.accessors[d.pr.indices];gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,buffer(ia.bufferView,gl.ELEMENT_ARRAY_BUFFER));d.count=ia.count;d.type=ia.componentType;d.offset=ia.byteOffset||0});
+}
+function shown(d){if(d.lobe)return visible.lung&&(!isolated||d.lobe===selectedLobe);return visible[d.group]}
+function modelFor(d){if(!exploded||!d.lobe)return d.model;const t=I(),o=EXPLODE[d.lobe];t[12]=o[0];t[13]=o[1];t[14]=o[2];return mul(t,d.model)}
+const VIEW_TARGET=[0,.35,0],MOBILE_LAYOUT=document.body.classList.contains('mobile-edition')||matchMedia('(max-width:760px),(pointer:coarse)').matches;
+let yaw=0,pitch=0,dist=5.2,auto=false,last=performance.now(),drag=false,px=0,py=0,moved=0,vpCurrent=I(),pickFB=null,pickTex=null,pickDepth=null,pickW=0,pickH=0,lungFitDistance=0;
+let examPreviousCamera=null,examFitDistance=0;
+function fitThoraxDistance(){const aspect=Math.max(.28,canvas.clientWidth/Math.max(1,canvas.clientHeight));return 1.17+Math.max(1.55/(Math.tan(.325)*.85),1.5/(Math.tan(.325)*aspect*.85))}
+function fitLungDistance(){const aspect=Math.max(.32,canvas.clientWidth/Math.max(1,canvas.clientHeight));return MOBILE_LAYOUT?Math.max(5.2,1.4/(Math.tan(.325)*aspect*.88)):5.2}
+function reset(){yaw=0;pitch=0;VIEW_TARGET[0]=0;VIEW_TARGET[1]=examOpen?-.04:.35;VIEW_TARGET[2]=0;dist=examOpen?fitThoraxDistance():fitLungDistance();if(examOpen)examFitDistance=dist;else lungFitDistance=dist}document.getElementById('reset').onclick=reset;canvas.ondblclick=reset;
+document.getElementById('spin').onclick=e=>{auto=!auto;e.currentTarget.setAttribute('aria-pressed',auto);e.currentTarget.textContent=auto?'停止旋转':'自动旋转'};
+const fullBtn=document.getElementById('full');
+function updateFullscreen(){const active=!!document.fullscreenElement;fullBtn.textContent=active?'退出全屏':'全屏';fullBtn.setAttribute('aria-pressed',active)}
+fullBtn.onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+document.getElementById('exitFull').onclick=()=>document.exitFullscreen();
+document.addEventListener('fullscreenchange',updateFullscreen);
+document.getElementById('menu').onclick=()=>document.getElementById('panel').classList.toggle('open');
+function selectLobe(name){selectedLobe=name;isolated=false;document.querySelectorAll('.lobe').forEach(b=>b.setAttribute('aria-selected',b.dataset.lobe===name));const x=LOBE_INFO[name],info=document.getElementById('info');info.querySelector('h3').textContent=x.title;info.querySelector('.latin').textContent=x.latin;info.querySelector('p').textContent=x.body;let seg=info.querySelector('.segments');if(!seg){seg=document.createElement('p');seg.className='segments';info.insertBefore(seg,info.querySelector('.info-actions'))}seg.textContent=x.segments;document.getElementById('isolate').disabled=false;document.getElementById('isolate').setAttribute('aria-pressed','false');document.getElementById('isolate').textContent='单独显示';document.getElementById('clear').disabled=false}
+function clearSelection(){selectedLobe=null;isolated=false;document.querySelectorAll('.lobe').forEach(b=>b.removeAttribute('aria-selected'));const info=document.getElementById('info');info.querySelector('h3').textContent='选择一个肺叶';info.querySelector('.latin').textContent='Click a lobe';info.querySelector('p').textContent='点击三维模型表面，或点击上方肺叶名称，查看位置、肺裂关系和主要支气管肺段。';info.querySelector('.segments')?.remove();document.getElementById('isolate').disabled=true;document.getElementById('clear').disabled=true}
+document.querySelectorAll('.lobe').forEach(b=>b.onclick=()=>{selectLobe(b.dataset.lobe);if(MOBILE_LAYOUT)document.getElementById('panel').classList.remove('open')});document.getElementById('clear').onclick=clearSelection;
+document.getElementById('isolate').onclick=e=>{if(!selectedLobe)return;isolated=!isolated;e.currentTarget.setAttribute('aria-pressed',isolated);e.currentTarget.textContent=isolated?'恢复全部肺叶':'单独显示'};
+document.getElementById('explode').onclick=e=>{exploded=!exploded;e.currentTarget.setAttribute('aria-pressed',exploded);e.currentTarget.textContent=exploded?'合拢肺叶':'拆解肺叶'};
+document.querySelectorAll('.part').forEach(b=>b.onclick=()=>{const g=b.dataset.group;visible[g]=!visible[g];b.setAttribute('aria-pressed',visible[g])});
+function setBranchFocus(key){branchFocus=key?AIRWAY_REGIONS[key]:null;document.querySelectorAll('.branch-option').forEach(b=>{const active=b.dataset.region===key;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active)});document.querySelectorAll('.branch-block').forEach(b=>b.classList.toggle('active',!!branchFocus&&b.dataset.lobeBlock===branchFocus.lobe));const marker=document.getElementById('branchMarker'),readout=document.getElementById('focusReadout');if(!branchFocus){marker.classList.remove('open');readout.textContent='请选择一个叶支气管或肺段';return}document.getElementById('branchMarkerText').textContent=branchFocus.title;readout.textContent='三维定位：'+branchFocus.title}
+function updateBranchMarker(){const marker=document.getElementById('branchMarker');if(!branchFocus||!diagramOpen){marker.classList.remove('open');return}const p=projectToCanvas(vpCurrent,branchFocus.center);if(!p||p[2]<-1||p[2]>1||p[0]<0||p[0]>canvas.clientWidth||p[1]<0||p[1]>canvas.clientHeight){marker.classList.remove('open');return}marker.style.left=p[0]+'px';marker.style.top=p[1]+'px';marker.classList.add('open')}
+document.querySelectorAll('.branch-option').forEach(b=>b.onclick=()=>setBranchFocus(b.dataset.region));
+let diagramOpen=false,lungBeforeDiagram=true;document.getElementById('diagramBtn').onclick=e=>{diagramOpen=!diagramOpen;e.currentTarget.setAttribute('aria-pressed',diagramOpen);e.currentTarget.textContent=diagramOpen?'退出图解':'支气管图解';document.getElementById('diagram').classList.toggle('open',diagramOpen);if(diagramOpen){if(auscMode)setAuscMode(false);if(examOpen)setExamOpen(false);lungBeforeDiagram=visible.lung;visible.lung=false;visible.bronchi=true;visible.trachea=true;reset();auto=false;document.getElementById('spin').setAttribute('aria-pressed','false');document.getElementById('spin').textContent='自动旋转'}else{visible.lung=lungBeforeDiagram;setBranchFocus(null)}document.querySelector('[data-group="lung"]').setAttribute('aria-pressed',visible.lung);document.querySelector('[data-group="bronchi"]').setAttribute('aria-pressed',visible.bronchi);document.querySelector('[data-group="trachea"]').setAttribute('aria-pressed',visible.trachea)};
+const auscBtn=document.getElementById('auscBtn'),auscLayer=document.getElementById('auscLayer'),auscCard=document.getElementById('auscCard'),auscAudio=document.getElementById('auscAudio');
+function chooseSound(key){const s=SOUND_INFO[key];document.querySelectorAll('.hotspot').forEach(b=>b.classList.toggle('active',b.dataset.sound===key));document.getElementById('soundTitle').textContent=s.title;document.getElementById('soundEn').textContent=s.en;const badge=document.getElementById('soundBadge');badge.textContent=s.normal?'正常（指定部位）':'异常呼吸音';badge.classList.toggle('abnormal',!s.normal);document.getElementById('soundSite').textContent=s.site;document.getElementById('soundNature').textContent=s.nature;document.getElementById('soundCause').textContent=s.cause;auscAudio.pause();auscAudio.src=AUDIO_DATA[key];auscAudio.currentTime=0;auscAudio.play().catch(()=>{})}
+function setAuscMode(on){auscMode=on;auscBtn.setAttribute('aria-pressed',on);auscBtn.textContent=on?'退出听诊':'听诊教学';auscLayer.classList.toggle('open',on);auscCard.classList.toggle('open',on);document.getElementById('listenHint').classList.toggle('open',on);if(on){if(examOpen)setExamOpen(false);reset();auto=false;document.getElementById('spin').setAttribute('aria-pressed','false');document.getElementById('spin').textContent='自动旋转';exploded=false;document.getElementById('explode').setAttribute('aria-pressed','false');document.getElementById('explode').textContent='拆解肺叶';if(diagramOpen)document.getElementById('diagramBtn').click();visible.lung=true;document.querySelector('[data-group="lung"]').setAttribute('aria-pressed','true')}else{auscAudio.pause();document.querySelectorAll('.hotspot').forEach(b=>b.classList.remove('active'))}}
+auscBtn.onclick=()=>setAuscMode(!auscMode);document.querySelectorAll('.hotspot').forEach(b=>b.onclick=()=>chooseSound(b.dataset.sound));
+function updateAuscHotspots(){document.querySelectorAll('.hotspot').forEach(b=>{const p=projectToCanvas(vpCurrent,AUSC_POINTS[b.dataset.sound]);const show=auscMode&&p&&p[2]>=-1&&p[2]<=1&&p[0]>=0&&p[0]<=canvas.clientWidth&&p[1]>=0&&p[1]<=canvas.clientHeight;b.style.visibility=show?'visible':'hidden';if(show){b.style.left=p[0]+'px';b.style.top=p[1]+'px'}})}
+const auscDragHandle=document.getElementById('auscDragHandle'),mainEl=document.querySelector('main');let cardDragging=false,cardDX=0,cardDY=0;
+auscDragHandle.onpointerdown=e=>{if(e.button!==0)return;const cardRect=auscCard.getBoundingClientRect(),mainRect=mainEl.getBoundingClientRect();cardDragging=true;cardDX=e.clientX-cardRect.left;cardDY=e.clientY-cardRect.top;auscCard.style.left=cardRect.left-mainRect.left+'px';auscCard.style.top=cardRect.top-mainRect.top+'px';auscCard.style.bottom='auto';auscCard.classList.add('dragging');auscDragHandle.setPointerCapture(e.pointerId)};
+auscDragHandle.onpointermove=e=>{if(!cardDragging)return;const mainRect=mainEl.getBoundingClientRect(),cardRect=auscCard.getBoundingClientRect(),x=Math.max(8,Math.min(mainRect.width-cardRect.width-8,e.clientX-mainRect.left-cardDX)),y=Math.max(70,Math.min(mainRect.height-cardRect.height-8,e.clientY-mainRect.top-cardDY));auscCard.style.left=x+'px';auscCard.style.top=y+'px'};
+auscDragHandle.onpointerup=auscDragHandle.onpointercancel=e=>{if(!cardDragging)return;cardDragging=false;auscCard.classList.remove('dragging');if(auscDragHandle.hasPointerCapture(e.pointerId))auscDragHandle.releasePointerCapture(e.pointerId)};
+const examBtn=document.getElementById('examBtn'),examLayer=document.getElementById('examLayer'),examCard=document.getElementById('examCard');
+const examDragHandle=document.getElementById('examDragHandle');let examDragging=false,examDX=0,examDY=0;
+function positionExamCard(x,y){const r=mainEl.getBoundingClientRect(),c=examCard.getBoundingClientRect(),toolbar=document.querySelector('.toolbar').getBoundingClientRect(),minY=Math.max(8,toolbar.bottom-r.top+8);examCard.style.left=Math.max(8,Math.min(Math.max(8,r.width-c.width-8),x))+'px';examCard.style.top=Math.max(Math.min(minY,Math.max(8,r.height-c.height-8)),Math.min(Math.max(8,r.height-c.height-8),y))+'px';examCard.style.bottom='auto'}
+examDragHandle.onpointerdown=e=>{if(e.button!==0||e.target.closest('button'))return;const c=examCard.getBoundingClientRect(),r=mainEl.getBoundingClientRect();examDragging=true;examDX=e.clientX-c.left;examDY=e.clientY-c.top;examCard.style.transition='none';positionExamCard(c.left-r.left,c.top-r.top);examDragHandle.setPointerCapture(e.pointerId);e.preventDefault()};
+examDragHandle.onpointermove=e=>{if(!examDragging)return;const r=mainEl.getBoundingClientRect();positionExamCard(e.clientX-r.left-examDX,e.clientY-r.top-examDY)};
+examDragHandle.onpointerup=examDragHandle.onpointercancel=e=>{examDragging=false;examCard.style.transition='';if(examDragHandle.hasPointerCapture(e.pointerId))examDragHandle.releasePointerCapture(e.pointerId)};
+const examCardResize=new ResizeObserver(()=>{if(examCard.style.top)positionExamCard(parseFloat(examCard.style.left),parseFloat(examCard.style.top))});examCardResize.observe(mainEl);examCardResize.observe(examCard);
+function foldExam(folded){examCard.querySelectorAll('.exam-site,.exam-grid,.thorax-legend,.exam-note').forEach(e=>{e.hidden=folded;e.style.display=folded?'none':''});const b=document.getElementById('examFold');b.textContent=folded?'展开说明':'收起说明';b.setAttribute('aria-expanded',String(!folded))}
+document.getElementById('examFold').onclick=()=>foldExam(document.getElementById('examFold').getAttribute('aria-expanded')==='true');
+function showExamIntro(){const palp=examKind==='palpation';document.getElementById('examTitle').textContent=palp?'胸部触诊教学':'胸部叩诊教学';document.getElementById('examSite').textContent='点击胸部定位点查看检查方法和异常变化';document.getElementById('examMethod').textContent=palp?'左右对称比较，观察胸廓扩张并触诊气管、压痛和语音震颤。':'按肋间自上而下、左右交替叩诊，比较声音和振动。';document.getElementById('examNormal').textContent=palp?'气管居中，双侧胸廓扩张基本对称，语音震颤左右相近。':'大部分肺野呈清音，并在心脏、肝脏等实质器官投影区转为浊音。';document.getElementById('examAbnormal').textContent='选择不同部位后显示常见变化及其临床提示。'}
+function chooseExamPoint(site){examSite=site;document.querySelectorAll('.exam-point').forEach(b=>b.classList.toggle('active',b.dataset.examSite===site));const info=site&&EXAM_INFO[examKind][site];if(!info){showExamIntro();return}foldExam(false);document.getElementById('examTitle').textContent=info.title;document.getElementById('examSite').textContent=(examKind==='palpation'?'触诊定位：':'叩诊定位：')+info.title;document.getElementById('examMethod').textContent=info.method;document.getElementById('examNormal').textContent=info.normal;document.getElementById('examAbnormal').textContent=info.abnormal}
+function setExamKind(kind){examKind=kind;document.querySelectorAll('[data-exam-kind]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.examKind===kind));document.querySelector('[data-exam-site="trachea"]').hidden=kind==='percussion';chooseExamPoint(null)}
+function setExamOpen(on){if(on&&!examOpen)examPreviousCamera={yaw,pitch,dist,target:[...VIEW_TARGET]};examOpen=on;examBtn.setAttribute('aria-pressed',on);examBtn.textContent=on?'退出查体':'触诊叩诊';examLayer.classList.toggle('open',on);examCard.classList.toggle('open',on);if(on){if(auscMode)setAuscMode(false);if(diagramOpen)document.getElementById('diagramBtn').click();reset();auto=false;exploded=false;document.getElementById('spin').setAttribute('aria-pressed','false');document.getElementById('spin').textContent='自动旋转';document.getElementById('explode').setAttribute('aria-pressed','false');document.getElementById('explode').textContent='拆解肺叶';visible.lung=true;document.querySelector('[data-group="lung"]').setAttribute('aria-pressed','true');setExamKind(examKind)}else{chooseExamPoint(null);if(examPreviousCamera){yaw=examPreviousCamera.yaw;pitch=examPreviousCamera.pitch;dist=examPreviousCamera.dist;VIEW_TARGET.splice(0,3,...examPreviousCamera.target);examPreviousCamera=null}examFitDistance=0}}
+function updateExamPoints(){document.querySelectorAll('.exam-point').forEach(b=>{if(b.hidden)return;const p=projectToCanvas(vpCurrent,EXAM_POINTS[b.dataset.examSite]);const show=examOpen&&p&&p[2]>=-1&&p[2]<=1&&p[0]>=0&&p[0]<=canvas.clientWidth&&p[1]>=0&&p[1]<=canvas.clientHeight;b.style.visibility=show?'visible':'hidden';if(show){b.style.left=p[0]+'px';b.style.top=p[1]+'px'}})}
+examBtn.onclick=()=>setExamOpen(!examOpen);document.querySelectorAll('[data-exam-kind]').forEach(b=>b.onclick=()=>setExamKind(b.dataset.examKind));document.querySelectorAll('.exam-point').forEach(b=>b.onclick=()=>chooseExamPoint(b.dataset.examSite));
+function ensurePick(w,h){if(pickW===w&&pickH===h)return;pickW=w;pickH=h;if(!pickFB){pickFB=gl.createFramebuffer();pickTex=gl.createTexture();pickDepth=gl.createRenderbuffer()}gl.bindTexture(gl.TEXTURE_2D,pickTex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.bindRenderbuffer(gl.RENDERBUFFER,pickDepth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,w,h);gl.bindFramebuffer(gl.FRAMEBUFFER,pickFB);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,pickTex,0);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,pickDepth);gl.bindFramebuffer(gl.FRAMEBUFFER,null)}
+function pick(clientX,clientY){const r=canvas.getBoundingClientRect(),dpr=canvas.width/r.width;ensurePick(canvas.width,canvas.height);gl.bindFramebuffer(gl.FRAMEBUFFER,pickFB);gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(pickProg);for(const d of drawables){if(!d.lobe||!shown(d))continue;gl.bindVertexArray(d.vao);gl.uniformMatrix4fv(PU.mvp,false,mul(vpCurrent,modelFor(d)));gl.uniform4f(PU.id,d.pickId/255,0,0,1);gl.drawElements(gl.TRIANGLES,d.count,d.type,d.offset)}const p=new Uint8Array(4);gl.readPixels(Math.floor((clientX-r.left)*dpr),Math.floor((r.bottom-clientY)*dpr),1,1,gl.RGBA,gl.UNSIGNED_BYTE,p);gl.bindFramebuffer(gl.FRAMEBUFFER,null);if(p[0]>0&&p[0]<=LOBE_NAMES.length)selectLobe(LOBE_NAMES[p[0]-1])}
+const activePointers=new Map();let pinchDistance=0;
+canvas.onpointerdown=e=>{activePointers.set(e.pointerId,[e.clientX,e.clientY]);moved=0;px=e.clientX;py=e.clientY;drag=activePointers.size===1;if(activePointers.size===2){const a=[...activePointers.values()];pinchDistance=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);drag=false}canvas.setPointerCapture(e.pointerId)};
+canvas.onpointerup=canvas.onpointercancel=e=>{const wasTap=activePointers.size===1&&moved<5;activePointers.delete(e.pointerId);pinchDistance=0;drag=false;if(wasTap&&!auscMode&&!examOpen)pick(e.clientX,e.clientY)};
+canvas.onpointermove=e=>{if(!activePointers.has(e.pointerId))return;activePointers.set(e.pointerId,[e.clientX,e.clientY]);if(activePointers.size===2){const a=[...activePointers.values()],next=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);if(pinchDistance){const max=examOpen?Math.max(14,fitThoraxDistance()*1.8):Math.max(10,fitLungDistance()*1.7);dist=Math.max(2.15,Math.min(max,dist*pinchDistance/next))}pinchDistance=next;moved+=2;return}if(!drag)return;const dx=e.clientX-px,dy=e.clientY-py;moved+=Math.abs(dx)+Math.abs(dy);yaw+=dx*.008;pitch=Math.max(-1.25,Math.min(1.25,pitch+dy*.008));px=e.clientX;py=e.clientY};
+canvas.onwheel=e=>{e.preventDefault();dist=Math.max(2.15,Math.min(examOpen?Math.max(14,fitThoraxDistance()*1.8):Math.max(10,fitLungDistance()*1.7),dist*Math.exp(e.deltaY*.001)))},{passive:false};
+function render(now){const fitted=examOpen?fitThoraxDistance():fitLungDistance(),previous=examOpen?examFitDistance:lungFitDistance;if(previous&&Math.abs(fitted-previous)>.001)dist*=fitted/previous;else if(MOBILE_LAYOUT&&!examOpen&&!previous)dist=fitted;if(examOpen)examFitDistance=fitted;else lungFitDistance=fitted;const w=canvas.clientWidth,h=canvas.clientHeight,dpr=Math.min(devicePixelRatio||1,2);if(canvas.width!==w*dpr||canvas.height!==h*dpr){canvas.width=w*dpr;canvas.height=h*dpr}gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(.027,.063,.086,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);if(auto)yaw+=(now-last)*.00022;last=now;const eye=[VIEW_TARGET[0]+dist*Math.sin(yaw)*Math.cos(pitch),VIEW_TARGET[1]+dist*Math.sin(pitch),VIEW_TARGET[2]+dist*Math.cos(yaw)*Math.cos(pitch)];vpCurrent=mul(perspective(.65,w/h,.02,30),look(eye,VIEW_TARGET,[0,1,0]));updateBranchMarker();updateAuscHotspots();updateExamPoints();gl.useProgram(prog);for(const d of drawables){if(!shown(d))continue;const model=modelFor(d);gl.bindVertexArray(d.vao);gl.uniformMatrix4fv(U.model,false,model);gl.uniformMatrix4fv(U.mvp,false,mul(vpCurrent,model));gl.uniform1f(U.selected,d.lobe===selectedLobe?1:0);gl.uniform1f(U.dimmed,selectedLobe&&d.lobe&&d.lobe!==selectedLobe?.26:0);const airwayFocused=!!branchFocus&&d.group==='bronchi';gl.uniform1f(U.airwayFocus,airwayFocused?1:0);if(airwayFocused){gl.uniform3f(U.focusCenter,...branchFocus.center);gl.uniform3f(U.focusRadius,...branchFocus.radius)}gl.drawElements(gl.TRIANGLES,d.count,d.type,d.offset)}if(examOpen)renderThoraxOverlay();requestAnimationFrame(render)}
+Promise.all([decode(),buildThoraxOverlay()]).then(()=>{statusEl.remove();requestAnimationFrame(render)}).catch(e=>{console.error(e);statusEl.textContent='模型载入失败：'+e.message;statusEl.style.color='#ffb1b1'})
+</script>
+</body></html>

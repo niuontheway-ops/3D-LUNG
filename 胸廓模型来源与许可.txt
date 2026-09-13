@@ -1,0 +1,22 @@
+胸廓解剖模型来源与修改记录
+
+BodyParts3D, (c) The Database Center for Life Science (DBCLS).
+数据版本：BodyParts3D / Anatomography 4.3。
+原项目：https://lifesciencedb.jp/bp3d/
+本次下载镜像：https://github.com/olivercase/body_parts_3d_api
+实际文件下载：https://media.githubusercontent.com/media/olivercase/body_parts_3d_api/main/meshes/
+索引及所用部件：assets/bodyparts-selected.csv、assets/bodyparts-manifest.csv。
+
+许可：原4.3发布页及上述镜像声明 CC Attribution-Share Alike 2.1 Japan。
+https://creativecommons.org/licenses/by-sa/2.1/jp/
+https://lifesciencedb.jp/bp3d/info_en/license/index.html
+官方档案另于2025年更新为CC BY 4.0：
+https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html
+本包为避免对历史4.3许可做过度推断，保留CC BY-SA 2.1 Japan署名及相同方式共享说明。
+本胸廓适配资产及适配脚本按CC BY-SA 2.1 Japan共享；模型的原许可权利不因网页或源码包加密而撤销。
+
+实际显示：24根肋骨、双侧肩胛骨、双侧锁骨、胸骨柄/体/剑突、20个肋软骨部件、12节胸椎以及真实皮肤的胸段裁剪。
+修改：保持骨骼原始面拓扑；根据同源左右肺段实质的联合边界向现有肺模型作三轴缩放及平移配准；重算法线；皮肤只保留胸段；赋教学材质。
+胸廓与现有肺来自不同个体，配准用于教学示意，不代表同一患者的影像重建。
+原始OBJ保留在assets/bodyparts；最终网页内嵌thorax.bin及thorax-meta.json，无联网依赖。
+配准仅使用名称含bronchopulmonary的肺段实质，未使用胰腺实质；参照肺实质不另行显示。

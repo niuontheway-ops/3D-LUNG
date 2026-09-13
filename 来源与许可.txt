@@ -1,0 +1,20 @@
+作品名称：Anatomy of the airways (opaque lungs)
+作者：E-learning UMCG
+原始来源：https://sketchfab.com/3d-models/anatomy-of-the-airways-opaque-lungs-1cd55d26c1254ab7a5d0845fb9a207fe
+许可证：Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+许可证全文：https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+改动说明：2026-09-12 将原始 GLB 模型嵌入离线 WebGL 教学查看器；依据肺裂位置将原始左右肺整体网格划分为五个教学肺叶，并增加点选说明、单叶显示、拆解、旋转、缩放、复位、支气管图解、肺部听诊及胸部触诊叩诊教学功能。当前胸廓改用 BodyParts3D 解剖网格，经坐标配准与适配后叠加；不属于原始 UMCG 模型资产，具体来源、版本、改动与许可见“胸廓模型来源与许可.txt”。
+
+使用要求：署名作者；不得用于商业目的；若改编后再分发，须使用相同许可证，并注明所做改动。
+
+品牌图像：壶兰呼吸正式 LOGO 由老崔于 2026-09-12 提供，原样嵌入首页，未重新绘制。对第三方解剖数据的许可不代表对品牌图像的额外授权。
+
+备份保护：另提供仅在本机运行的密码加密源码备份工具，供所有者自行保管备份。离线课堂网页未施加密码或账号锁。备份工具不改变以上素材许可，也不取消接收者在适用许可证下的权利。
+
+听诊音频：由使用者提供的“MEDZCOOL听诊-肺部呼吸音（8P）”视频提取，仅转换为网页播放所需的单声道 MP3，原视频未被修改。音频版权及课堂使用权限以原发布者的许可为准，本项目未取得或声明额外授权。
+
+医学说明参考：
+NCBI Bookshelf, Lung Sounds：https://www.ncbi.nlm.nih.gov/books/NBK537253/
+Merck Manual Professional, Evaluation of the Patient With Pulmonary Issues：https://www.merckmanuals.com/professional/pulmonary-disorders/approach-to-the-pulmonary-patient/evaluation-of-the-patient-with-pulmonary-issues
+NCBI Bookshelf, Chest Examination：https://www.ncbi.nlm.nih.gov/books/NBK368/
